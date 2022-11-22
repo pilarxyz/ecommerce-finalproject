@@ -27,7 +27,7 @@ class TokenBlocklist(db.Model):
     revoked = db.Column(db.Boolean, nullable=False)
     expires = db.Column(db.DateTime, nullable=False)
 
-    user = db.relationship("User", lazy="joined")
+    user = db.relationship("User", backref=db.backref("tokens", lazy=True))
 
     def to_dict(self):
         return {
