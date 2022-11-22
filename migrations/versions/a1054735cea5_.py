@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: b2122e3ae4e1
+Revision ID: a1054735cea5
 Revises: 
-Create Date: 2022-11-22 22:23:40.811364
+Create Date: 2022-11-22 23:04:38.687448
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b2122e3ae4e1'
+revision = 'a1054735cea5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,7 +41,7 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_table('user',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('name', sa.String(length=80), nullable=False),
     sa.Column('email', sa.String(length=80), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=False),
@@ -72,7 +72,7 @@ def upgrade():
     )
     op.create_table('orders',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.String(length=36), nullable=False),
     sa.Column('status', sa.String(length=80), nullable=False),
     sa.Column('address', sa.String(length=80), nullable=False),
     sa.Column('city', sa.String(length=80), nullable=False),
@@ -110,7 +110,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('jti', sa.String(length=36), nullable=False),
     sa.Column('token_type', sa.String(length=10), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.String(length=36), nullable=False),
     sa.Column('revoked', sa.Boolean(), nullable=False),
     sa.Column('expires', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -119,7 +119,7 @@ def upgrade():
     )
     op.create_table('carts',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.String(length=36), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=True),
     sa.Column('size', sa.String(length=80), nullable=False),
