@@ -2,13 +2,10 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from ecommerce.extensions import db, pwd_context
 
-from faker import Faker
-
-
 class User(db.Model):
     """Basic users model"""
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     name = db.Column(db.String(80), unique=False, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column("password", db.String(255), nullable=False)

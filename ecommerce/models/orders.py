@@ -6,7 +6,7 @@ class Orders(db.Model):
     """Basic orders model"""
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('orders', lazy=True))
     status = db.Column(db.String(80), unique=True, nullable=False)
     address = db.Column(db.String(80), unique=True, nullable=False)
