@@ -10,7 +10,7 @@ class Products(db.Model):
     price = db.Column(db.String(80), unique=True, nullable=False)
     condition = db.Column(db.String(80), unique=True, nullable=False)
     description = db.Column(db.Text, unique=True, nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+    category_id = db.Column(db.String(36), db.ForeignKey('categories.id'), nullable=False)
     category = db.relationship('Categories', backref=db.backref('products', lazy=True))
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())

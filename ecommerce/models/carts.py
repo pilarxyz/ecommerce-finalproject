@@ -8,7 +8,7 @@ class Carts(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('carts', lazy=True))
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    product_id = db.Column(db.String(36), db.ForeignKey('products.id'), nullable=False)
     product = db.relationship('Products', backref=db.backref('carts', lazy=True))
     quantity = db.Column(db.Integer, default=0)
     size = db.Column(db.String(80), unique=True, nullable=False)
