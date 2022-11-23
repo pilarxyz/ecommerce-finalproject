@@ -8,7 +8,6 @@ from faker import Faker
 @click.command("init")
 @with_appcontext
 def init():
-    """Create a new user"""
     from ecommerce.extensions import db
     from ecommerce.models import User
     from ecommerce.models import TokenBlocklist
@@ -21,7 +20,7 @@ def init():
     from ecommerce.models import Banners
     from ecommerce.models import Carts
     
-    fake = Faker()
+    fake = Faker('id_ID')
     user_id = []
     product_id = []
     order_id = []
@@ -30,6 +29,7 @@ def init():
     
     for _ in range(10):
         user = User(
+            id = fake.uuid4(),
             name=fake.name(),
             email=fake.email(),
             password=fake.password(),
@@ -46,6 +46,7 @@ def init():
         
     for _ in range(10):
         category = Categories(
+            id = fake.uuid4(),
             title=fake.name(),
             type=fake.random_int(min=0, max=1000000),
         )
@@ -56,11 +57,12 @@ def init():
     
     for _ in range(10):
         product = Products(
+            id = fake.uuid4(),
             title=fake.name(),
             price=fake.random_int(min=0, max=1000000),
             condition=fake.random_int(min=0, max=1000000),
             description=fake.text(),
-            category_id=fake.random_int(min=1, max=10),
+            category_id=fake.random_element(elements=category_id),
         )
         db.session.add(product)
         product_id.append(product.id)
@@ -69,6 +71,7 @@ def init():
     
     for _ in range(10):
         image = Images(
+            id = fake.uuid4(),
             name=fake.name(),
             image_url=fake.image_url(),
         )
@@ -79,8 +82,8 @@ def init():
     
     for _ in range(10):
         cart = Carts(
-            user_id=user.id,
-            product_id=fake.random_int(min=1, max=10),
+            user_id=fake.random_element(elements=user_id),
+            product_id=fake.random_element(elements=product_id),
             quantity=fake.random_int(min=0, max=1000000),
             size=fake.name(),
         )
@@ -88,135 +91,48 @@ def init():
     db.session.commit()
     print("Cart created")
     
-    # for _ in range(10):
-    #     order = Orders(
-    #         user_id=fake.uuid4(),
-    #         status=fake.random_int(min=0, max=1000000),
-    #         address=fake.address(),
-    #         city=fake.city(),
-    #         shipping_price=fake.random_int(min=0, max=1000000),
-    #         shipping_method=fake.random_int(min=0, max=1000000),
-    #     )
-    #     db.session.add(order)
-    #     order_id.append(order.id)
-    
-    # for _ in range(10):
-    #     image = Images(
-    #         name=fake.name(),
-    #         image_url=fake.image_url(),
-    #     )
-    #     db.session.add(image)
-    #     image_id.append(image.id)
+    for _ in range(10):
+        order = Orders(
+            id = fake.uuid4(),
+            user_id=fake.random_element(elements=user_id),
+            status=fake.random_int(min=0, max=1000000),
+            address=fake.address(),
+            city=fake.city(),
+            shipping_price=fake.random_int(min=0, max=1000000),
+            shipping_method=fake.random_int(min=0, max=1000000),
         
-    # for _ in range(10):
-    #     banner = Banners(
-    #         title=fake.name(),
-    #         image_id=fake.random_int(min=0, max=10),
-    #     )
-    #     db.session.add(banner)
-        
-    # for _ in range(10):
-    #     order_product = Order_Products(
-    #         order_id=fake.random_int(min=1, max=10),
-    #         product_id=fake.random_int(min=1, max=10),
-    #         quantity=fake.random_int(min=0, max=1000000),
-    #         size=fake.name(),
-    #     )
-    #     db.session.add(order_product)
-        
-    # for _ in range(10):
-    #     product_image = Product_Images(
-    #         product_id=fake.random_int(min=1, max=10),
-    #         image_id=fake.random_int(min=1, max=10),
-    #     )
-    #     db.session.add(product_image)
-        
+        )
+        db.session.add(order)
+        order_id.append(order.id)
+    db.session.commit()
+    print("Order created")
     
+    for _ in range(10):
+        order_product = Order_Products(
+            order_id=fake.random_element(elements=order_id),
+            product_id=fake.random_element(elements=product_id),
+            quantity=fake.random_int(min=0, max=1000000),
+            size=fake.name(),
+        )
+        db.session.add(order_product)
+    db.session.commit()
+    print("Order_Product created")
     
+    for _ in range(10):
+        product_image = Product_Images(
+            product_id=fake.random_element(elements=product_id),
+            image_id=fake.random_element(elements=image_id),
+        )
+        db.session.add(product_image)
+    db.session.commit()
+    print("Product_Image created")
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    # =================================
-    
-    # for i in range(10):
-    #     category = Categories(
-    #         title=fake.name(),
-    #         type=fake.name(),
-    #     )
-    #     db.session.add(category)
-    # db.session.commit()
-    
-    # for i in range(10):
-    #     product = Products(
-    #         tittle=fake.name(),
-    #         price=fake.random_int(0, 10000000),
-    #         condition=fake.name(),
-    #         description=fake.name(),
-    #         category_id=fake.random_int(1, 10),
-    #     )
-    #     db.session.add(product)
-    # db.session.commit()
-    
-    # for i in range(10):
-    #     order = Orders(
-    #         user_id=
-    #         status=fake.name(),
-    #         address=fake.address(),
-    #         city=fake.city(),
-    #         shipping_price=fake.random_int(0, 10000000),
-    #         shipping_method=fake.name(),
-    #     )
-    #     db.session.add(order)
-    # db.session.commit()
-    
-    # for i in range(10):
-    #     order_product = Order_Products(
-    #         order_id=fake.random_int(1, 10),
-    #         product_id=fake.random_int(1, 10),
-    #         quantity=fake.random_int(0, 10000000),
-    #         size=fake.name(),
-    #     )
-    #     db.session.add(order_product)
-    # db.session.commit()
-    
-    # for i in range(10):
-    #     product_image = Product_Images(
-    #         product_id=fake.random_int(1, 10),
-    #         image_id=fake.random_int(1, 10),
-    #     )
-    #     db.session.add(product_image)
-    # db.session.commit()
-
-    # for i in range(10):
-    #     image = Images(
-    #         name=fake.name(),
-    #         image_url=fake.name(),
-    #     )
-    #     db.session.add(image)
-    # db.session.commit()
-    
-    # for i in range(10):
-    #     banner = Banners(
-    #         tittle=fake.name(),
-    #         image_id=fake.random_int(1, 10),
-    #     )
-    #     db.session.add(banner)
-    # db.session.commit()
-    
-    # for i in range(10):
-    #     cart = Carts(
-    #         user_id=user_id,
-    #         product_id=fake.random_int(1, 10),
-    #         quantity=fake.random_int(0, 10000000),
-    #         size=fake.name(),
-    #     )
-    #     db.session.add(cart)
-    # db.session.commit()
-        
+    for _ in range(10):
+        banner = Banners(
+            id = fake.uuid4(),
+            title=fake.name(),
+            image_id=fake.random_element(elements=image_id),
+        )
+        db.session.add(banner)
+    db.session.commit()
+    print("Banner created")
