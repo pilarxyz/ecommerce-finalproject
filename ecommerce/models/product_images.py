@@ -5,7 +5,7 @@ from ecommerce.extensions import db
 class Product_Images (db.Model):
     """Basic product_images model"""
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     product = db.relationship('Products', backref=db.backref('product_images', lazy=True))
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)

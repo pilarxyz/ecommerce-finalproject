@@ -6,7 +6,7 @@ from ecommerce.extensions import db
 class Order_Products (db.Model):
     """Basic order_products model"""
     
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     order = db.relationship('Orders', backref=db.backref('order_products', lazy=True))
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)

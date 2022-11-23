@@ -5,7 +5,7 @@ from ecommerce.extensions import db
 class Carts(db.Model):
     """Basic carts model"""
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('carts', lazy=True))
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)

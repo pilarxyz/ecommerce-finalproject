@@ -5,7 +5,7 @@ from ecommerce.extensions import db
 class Products(db.Model):
     """Basic products model"""
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     title = db.Column(db.String(80), unique=True, nullable=False)
     price = db.Column(db.String(80), unique=True, nullable=False)
     condition = db.Column(db.String(80), unique=True, nullable=False)

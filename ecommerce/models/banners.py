@@ -5,7 +5,7 @@ from ecommerce.extensions import db
 class Banners(db.Model):
     """Basic banners model"""
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
     title = db.Column(db.String(80), unique=True, nullable=False)
     image_id = db.Column(db.Integer, db.ForeignKey('images.id'), nullable=False)
     image = db.relationship('Images', backref=db.backref('banner', lazy=True))
