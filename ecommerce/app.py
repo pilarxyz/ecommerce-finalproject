@@ -59,3 +59,4 @@ def register_blueprints(app):
     """Register all blueprints for application"""
     app.register_blueprint(auth.views.blueprint)
     app.register_blueprint(api.views.blueprint)
+    app.register_blueprint(api.home.blueprint)
