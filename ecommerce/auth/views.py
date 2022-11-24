@@ -31,7 +31,7 @@ def login():
             schema:
               type: object
               properties:
-                username:
+                email:
                   type: string
                   example: myuser
                   required: true
@@ -59,12 +59,12 @@ def login():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    username = request.json.get("username", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if not username or not password:
-        return jsonify({"msg": "Missing username or password"}), 400
+    if not email or not password:
+        return jsonify({"msg": "Missing email or password"}), 400
 
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first()
     if user is None or not pwd_context.verify(password, user.password):
         return jsonify({"msg": "Bad credentials"}), 400
 
