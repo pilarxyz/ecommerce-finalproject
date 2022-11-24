@@ -6,10 +6,10 @@ class Products(db.Model):
     """Basic products model"""
 
     id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
-    title = db.Column(db.String(80), unique=True, nullable=False)
-    price = db.Column(db.String(80), unique=True, nullable=False)
-    condition = db.Column(db.String(80), unique=True, nullable=False)
-    description = db.Column(db.Text, unique=True, nullable=False)
+    title = db.Column(db.String(80), nullable=False)
+    product_detail = db.Column(db.Text, nullable=False)
+    price = db.Column(db.String(80), nullable=False)
+    condition = db.Column(db.String(80), nullable=False)
     category_id = db.Column(db.String(36), db.ForeignKey('categories.id'), nullable=False)
     category = db.relationship('Categories', backref=db.backref('products', lazy=True))
     created_at = db.Column(db.DateTime, default=db.func.now())

@@ -11,7 +11,7 @@ class Carts(db.Model):
     product_id = db.Column(db.String(36), db.ForeignKey('products.id'), nullable=False)
     product = db.relationship('Products', backref=db.backref('carts', lazy=True))
     quantity = db.Column(db.Integer, default=0)
-    size = db.Column(db.String(80), unique=True, nullable=False)
+    size = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
     deleted_at = db.Column(db.DateTime, nullable=True)

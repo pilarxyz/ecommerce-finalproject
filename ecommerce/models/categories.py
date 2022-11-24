@@ -6,8 +6,7 @@ class Categories(db.Model):
     """Basic categories model"""
 
     id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
-    title = db.Column(db.String(80), unique=True, nullable=False)
-    type = db.Column(db.String(80), unique=True, nullable=False)
+    title = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
     deleted_at = db.Column(db.DateTime, nullable=True)

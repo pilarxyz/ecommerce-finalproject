@@ -27,6 +27,21 @@ def init():
     image_id = []
     category_id = []
     
+    # Create 1 admin user
+    admin = User(
+        name="Admin",
+        email="admin@gmail.com",
+        password="password",
+        phone_number="081314569839",
+        address="Jl. Jendral Sudirman",
+        city="Jakarta",
+        balance=1000000,
+        is_admin=True
+    )
+    db.session.add(admin)
+    db.session.commit()
+    print("Admin created")
+    
     for _ in range(10):
         user = User(
             id = fake.uuid4(),
@@ -37,7 +52,7 @@ def init():
             address=fake.address(),
             city=fake.city(),
             balance=fake.random_int(min=0, max=1000000),
-            is_admin=fake.boolean(chance_of_getting_true=50),
+            is_admin=fake.boolean(chance_of_getting_true=10),
         )
         db.session.add(user)
         user_id.append(user.id)
@@ -47,8 +62,7 @@ def init():
     for _ in range(10):
         category = Categories(
             id = fake.uuid4(),
-            title=fake.name(),
-            type=fake.random_int(min=0, max=1000000),
+            title=fake.word(),
         )
         db.session.add(category)
         category_id.append(category.id)
@@ -59,9 +73,9 @@ def init():
         product = Products(
             id = fake.uuid4(),
             title=fake.name(),
+            product_detail=fake.text(),
             price=fake.random_int(min=0, max=1000000),
-            condition=fake.random_int(min=0, max=1000000),
-            description=fake.text(),
+            condition=fake.random_element(elements=('new', 'used')),
             category_id=fake.random_element(elements=category_id),
         )
         db.session.add(product)
@@ -84,22 +98,23 @@ def init():
         cart = Carts(
             user_id=fake.random_element(elements=user_id),
             product_id=fake.random_element(elements=product_id),
-            quantity=fake.random_int(min=0, max=1000000),
-            size=fake.name(),
+            quantity=fake.pyint(min_value=1, max_value=10),
+            size=fake.random_element(elements=("S", "M", "L", "XL")),
         )
         db.session.add(cart)
     db.session.commit()
     print("Cart created")
     
-    for _ in range(10):
+    for _ in range(30):
         order = Orders(
             id = fake.uuid4(),
             user_id=fake.random_element(elements=user_id),
-            status=fake.random_int(min=0, max=1000000),
+            status=fake.random_element(elements=("pending", "paid", "shipped", "delivered")),
             address=fake.address(),
+            address_name=fake.city(),
             city=fake.city(),
-            shipping_price=fake.random_int(min=0, max=1000000),
-            shipping_method=fake.random_int(min=0, max=1000000),
+            shipping_price=fake.random_int(min=1000, max=100000),
+            shipping_method=fake.random_element(elements=("Same Day", "Next Day", "Regular")),
         
         )
         db.session.add(order)
@@ -111,8 +126,8 @@ def init():
         order_product = Order_Products(
             order_id=fake.random_element(elements=order_id),
             product_id=fake.random_element(elements=product_id),
-            quantity=fake.random_int(min=0, max=1000000),
-            size=fake.name(),
+            quantity=fake.pyint(min_value=1, max_value=5),
+            size=fake.random_element(elements=("S", "M", "L", "XL")),
         )
         db.session.add(order_product)
     db.session.commit()

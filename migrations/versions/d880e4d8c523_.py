@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 1f8bc1b7e8b4
+Revision ID: d880e4d8c523
 Revises: 
-Create Date: 2022-11-23 21:40:03.587587
+Create Date: 2022-11-23 23:26:37.489748
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1f8bc1b7e8b4'
+revision = 'd880e4d8c523'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,13 +21,10 @@ def upgrade():
     op.create_table('categories',
     sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('title', sa.String(length=80), nullable=False),
-    sa.Column('type', sa.String(length=80), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('title'),
-    sa.UniqueConstraint('type')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('images',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -36,9 +33,7 @@ def upgrade():
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('image_url'),
-    sa.UniqueConstraint('name')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -65,14 +60,14 @@ def upgrade():
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['image_id'], ['images.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('title')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('orders',
     sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('user_id', sa.String(length=36), nullable=False),
     sa.Column('status', sa.String(length=80), nullable=False),
-    sa.Column('address', sa.String(length=80), nullable=False),
+    sa.Column('address', sa.String(length=255), nullable=False),
+    sa.Column('address_name', sa.String(length=80), nullable=False),
     sa.Column('city', sa.String(length=80), nullable=False),
     sa.Column('shipping_price', sa.String(length=80), nullable=False),
     sa.Column('shipping_method', sa.String(length=80), nullable=False),
@@ -85,19 +80,15 @@ def upgrade():
     op.create_table('products',
     sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('title', sa.String(length=80), nullable=False),
+    sa.Column('product_detail', sa.Text(), nullable=False),
     sa.Column('price', sa.String(length=80), nullable=False),
     sa.Column('condition', sa.String(length=80), nullable=False),
-    sa.Column('description', sa.Text(), nullable=False),
     sa.Column('category_id', sa.String(length=36), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('condition'),
-    sa.UniqueConstraint('description'),
-    sa.UniqueConstraint('price'),
-    sa.UniqueConstraint('title')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('token_blocklist',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -121,8 +112,7 @@ def upgrade():
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('size')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('order__products',
     sa.Column('id', sa.String(length=36), nullable=False),

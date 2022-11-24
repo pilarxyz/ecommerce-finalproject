@@ -6,12 +6,12 @@ class User(db.Model):
     """Basic users model"""
 
     id = db.Column(db.String(36), primary_key=True, default=db.func.uuid_generate_v4())
-    name = db.Column(db.String(80), unique=False, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     _password = db.Column("password", db.String(255), nullable=False)
     phone_number = db.Column(db.String(80), unique=True, nullable=False)
-    address = db.Column(db.String(80), unique=False, nullable=False)
-    city = db.Column(db.String(80), unique=False, nullable=False)
+    address = db.Column(db.String(80), nullable=False)
+    city = db.Column(db.String(80), nullable=False)
     balance = db.Column(db.Integer, default=0)
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
