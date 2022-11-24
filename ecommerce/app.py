@@ -11,11 +11,12 @@ from ecommerce.extensions import migrate
 def create_app(testing=False):
     """Application factory, used to create application"""
     app = Flask("ecommerce")
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/app'
     app.config.from_object("ecommerce.config")
 
     if testing is True:
         app.config["TESTING"] = True
-
+    
     configure_extensions(app)
     configure_cli(app)
     configure_apispec(app)
