@@ -2,10 +2,9 @@ from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, UserList
-from ecommerce.api.schemas import UserSchema
-from ecommerce.api.resources import ProductResource, ProductList
-from ecommerce.api.schemas import ProductSchema
+from ecommerce.api.resources import UserResource, UserList, ProductResource, ProductList, BannerList, CategoryImageList
+from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema
+
 
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -16,6 +15,8 @@ api.add_resource(UserResource, "/users/<int:user_id>", endpoint="user_by_id")
 api.add_resource(UserList, "/users", endpoint="users")
 api.add_resource(ProductResource, "/products/<int:product_id>", endpoint="product_by_id")
 api.add_resource(ProductList, "/products", endpoint="products")
+api.add_resource(BannerList, "/home/banners", endpoint="banners")
+api.add_resource(CategoryImageList, "/home/categories", endpoint="categories")
 
 
 @blueprint.before_app_first_request
@@ -26,6 +27,10 @@ def register_views():
     apispec.spec.components.schema("ProductSchema", schema=ProductSchema)
     apispec.spec.path(view=ProductResource, app=current_app)
     apispec.spec.path(view=ProductList, app=current_app)
+    apispec.spec.components.schema("BannerSchema", schema=BannerSchema)
+    apispec.spec.path(view=BannerList, app=current_app)
+    apispec.spec.components.schema("CategoryImageSchema", schema=CategoryImageSchema)
+    apispec.spec.path(view=CategoryImageList, app=current_app)
 
 
 
