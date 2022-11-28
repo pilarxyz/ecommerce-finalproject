@@ -42,7 +42,7 @@ def init():
     db.session.commit()
     print("Admin created")
     
-    for _ in range(10):
+    for _ in range(1):
         user = User(
             id = fake.uuid4(),
             name=fake.name(),
@@ -59,7 +59,7 @@ def init():
     db.session.commit()
     print("User created")
         
-    for _ in range(10):
+    for _ in range(1):
         category = Categories(
             id = fake.uuid4(),
             title=fake.word(),
@@ -69,7 +69,7 @@ def init():
     db.session.commit()
     print("Category created")
     
-    for _ in range(10):
+    for _ in range(1):
         product = Products(
             id = fake.uuid4(),
             title=fake.name(),
@@ -83,7 +83,7 @@ def init():
     db.session.commit()
     print("Product created")
     
-    for _ in range(10):
+    for _ in range(1):
         image = Images(
             id = fake.uuid4(),
             name=fake.name(),
@@ -94,7 +94,7 @@ def init():
     db.session.commit()
     print("Image created")
     
-    for _ in range(10):
+    for _ in range(1):
         cart = Carts(
             user_id=fake.random_element(elements=user_id),
             product_id=fake.random_element(elements=product_id),
@@ -122,7 +122,7 @@ def init():
     db.session.commit()
     print("Order created")
     
-    for _ in range(10):
+    for _ in range(1):
         order_product = Order_Products(
             order_id=fake.random_element(elements=order_id),
             product_id=fake.random_element(elements=product_id),
@@ -133,7 +133,7 @@ def init():
     db.session.commit()
     print("Order_Product created")
     
-    for _ in range(10):
+    for _ in range(1):
         product_image = Product_Images(
             product_id=fake.random_element(elements=product_id),
             image_id=fake.random_element(elements=image_id),
@@ -142,7 +142,7 @@ def init():
     db.session.commit()
     print("Product_Image created")
     
-    for _ in range(10):
+    for _ in range(1):
         banner = Banners(
             id = fake.uuid4(),
             title=fake.name(),
