@@ -11,6 +11,11 @@ from sqlalchemy.orm.exc import NoResultFound
 from ecommerce.extensions import db
 from ecommerce.models import TokenBlocklist
 
+def signup_user(user):
+    """Adds a new user to the database"""
+    db.session.add(user)
+    db.session.commit()
+
 
 def add_token_to_database(encoded_token, identity_claim):
     """

@@ -1,9 +1,12 @@
-from ecommerce.models import Products
+from ecommerce.models import Products, Product_Images, Images
 from ecommerce.extensions import ma, db
 
 class ProductSchema(ma.SQLAlchemyAutoSchema):
     
-
+    id = ma.String()
+    title = ma.String()
+    price = ma.String()
+    image = ma.String()
+    
     class Meta:
-        sqla_session = db.session
-        load_instance = True
+        ordered = True
