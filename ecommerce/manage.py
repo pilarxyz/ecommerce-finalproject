@@ -74,6 +74,7 @@ def init():
             id = fake.uuid4(),
             title=fake.name(),
             product_detail=fake.text(),
+            size=fake.random_element(elements=("S", "M", "L", "XL")),
             price=fake.random_int(min=0, max=1000000),
             condition=fake.random_element(elements=('new', 'used')),
             category_id=fake.random_element(elements=category_id),

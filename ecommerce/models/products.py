@@ -9,6 +9,7 @@ class Products(db.Model):
     title = db.Column(db.String(80), nullable=False)
     product_detail = db.Column(db.Text, nullable=False)
     price = db.Column(db.String(80), nullable=False)
+    size = db.Column(db.String(80), nullable=False)
     condition = db.Column(db.String(80), nullable=False)
     category_id = db.Column(db.String(36), db.ForeignKey('categories.id'), nullable=False)
     category = db.relationship('Categories', backref=db.backref('products', lazy=True))
