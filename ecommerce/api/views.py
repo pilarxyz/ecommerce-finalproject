@@ -2,8 +2,8 @@ from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, UserList, ProductList, BannerList, CategoryImageList, CategoriesList
-from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema
+from ecommerce.api.resources import UserResource, UserList, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail
+from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema
 
 
 
@@ -14,9 +14,11 @@ api = Api(blueprint)
 api.add_resource(UserResource, "/users/<int:user_id>", endpoint="user_by_id")
 api.add_resource(UserList, "/users", endpoint="users")
 api.add_resource(ProductList, "/products", endpoint="products")
+api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
 api.add_resource(BannerList, "/home/banners", endpoint="banners")
 api.add_resource(CategoryImageList, "/home/categories", endpoint="categoriesimages")
 api.add_resource(CategoriesList, "/categories", endpoint="categories")
+
 
 
 
@@ -33,6 +35,8 @@ def register_views():
     apispec.spec.path(view=CategoryImageList, app=current_app)
     apispec.spec.components.schema("CategoriesSchema", schema=CategoriesSchema)
     apispec.spec.path(view=CategoriesList, app=current_app)
+    apispec.spec.components.schema("ProductDetailSchema", schema=ProductDetailSchema)
+    apispec.spec.path(view=ProductDetail, app=current_app)
 
 @blueprint.errorhandler(ValidationError)
 def handle_marshmallow_error(e):
