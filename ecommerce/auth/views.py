@@ -33,10 +33,10 @@ def login():
               properties:
                 email:
                   type: string
-                  example:
+                  example: admin@gmail.com
                 password:
                   type: string
-                  example:
+                  example: password
       responses:
         200:
           content:
@@ -70,7 +70,9 @@ def login():
           description: Unauthorized
     """
     
-
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+    
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     if not email or not password:

@@ -25,3 +25,4 @@ class ProductDetailSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         ordered = True
+        

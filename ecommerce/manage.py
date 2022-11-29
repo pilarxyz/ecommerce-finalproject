@@ -28,26 +28,26 @@ def init():
     category_id = []
     
     # Create 1 admin user
-    admin = User(
-        name="Admin",
-        email="admin@gmail.com",
-        password="password",
-        phone_number="081314569839",
-        address="Jl. Jendral Sudirman",
-        city="Jakarta",
-        balance=1000000,
-        is_admin=True
-    )
-    db.session.add(admin)
-    db.session.commit()
-    print("Admin created")
+    # admin = User(
+    #     name="Admin",
+    #     email="admin@gmail.com",
+    #     password="password",
+    #     phone_number="081314569839",
+    #     address="Jl. Jendral Sudirman",
+    #     city="Jakarta",
+    #     balance=1000000,
+    #     is_admin=True
+    # )
+    # db.session.add(admin)
+    # db.session.commit()
+    # print("Admin created")
     
     for _ in range(1):
         user = User(
             id = fake.uuid4(),
             name=fake.name(),
             email=fake.email(),
-            password=fake.password(),
+            password="password",
             phone_number=fake.phone_number(),
             address=fake.address(),
             city=fake.city(),
