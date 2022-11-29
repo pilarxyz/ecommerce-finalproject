@@ -12,7 +12,7 @@ from ecommerce.extensions import pwd_context, jwt, apispec
 from ecommerce.auth.helpers import signup_user, revoke_token, is_token_revoked, add_token_to_database
 
 
-blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+blueprint = Blueprint("auth", __name__, url_prefix="/api/v1")
 
 
 @blueprint.route("/sign-in", methods=["POST"])
@@ -70,8 +70,6 @@ def login():
           description: Unauthorized
     """
     
-    if not request.is_json:
-        return jsonify({"message": "Missing JSON in request"}), 400
 
     email = request.json.get("email", None)
     password = request.json.get("password", None)
@@ -97,7 +95,7 @@ def login():
                 'type': 'seller' if user.is_admin else 'buyer'
             }, 
             "message": "Login success",
-            "access_token": access_token,
+            "token": access_token,
         }
     ), 200
         
