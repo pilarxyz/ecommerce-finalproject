@@ -36,17 +36,17 @@ class ProductList(Resource):
             JOIN product__images ON products.id = product__images.product_id
             JOIN images ON product__images.image_id = images.id
             """
-        ).fetchall()
+        ).fetchall()            
+      
+        if not products:
+          return {'message': 'Products not found'}, 404
+        
         return jsonify(
             {
                 "data": ProductSchema(many=True).dump(products),
                 "total_rows": len(products)
             }
         )
-                      
-      
-        if not products:
-          return {'message': 'Products not found'}, 404
     
     def error_handler(self, error):
         return {'message': str(error)}, 400
@@ -90,14 +90,15 @@ class ProductDetail(Resource):
             """,
             {"id": id}
         ).fetchone()
+      
+        if not product:
+          return {'message': 'Product not found'}, 404
+        
         return jsonify(
             {
                 "data": ProductDetailSchema().dump(product),
             }
         )
-      
-        if not product:
-          return {'message': 'Product not found'}, 404
       
     def error_handler(self, error):
         return {'message': str(error)}, 400

@@ -14,3 +14,4 @@ tox
 psycopg2-binary
 faker
 SQLAlchemy
+flask-cors

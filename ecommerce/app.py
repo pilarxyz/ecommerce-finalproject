@@ -7,6 +7,8 @@ from ecommerce.extensions import db
 from ecommerce.extensions import jwt
 from ecommerce.extensions import migrate
 
+# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 def create_app(testing=False):
     """Application factory, used to create application"""

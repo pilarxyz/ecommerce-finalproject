@@ -6,13 +6,14 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_jwt,
 )
-
+from flask_cors import CORS
 from ecommerce.models import User
 from ecommerce.extensions import pwd_context, jwt, apispec
 from ecommerce.auth.helpers import signup_user, revoke_token, is_token_revoked, add_token_to_database
 
 
 blueprint = Blueprint("auth", __name__, url_prefix="/api/v1")
+CORS(blueprint)
 
 
 @blueprint.route("/sign-in", methods=["POST"])

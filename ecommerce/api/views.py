@@ -1,24 +1,32 @@
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
+from flask_cors import CORS
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, UserList, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList
-from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema
+from ecommerce.api.resources import UserResource, UserList, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress
+from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema
 
 
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
+CORS(blueprint)
+
+# add CORS support
+# from flask_cors import CORS
+# CORS(blueprint, resources={r"/api/*": {"origins": "*"}})
 
 
 api.add_resource(UserResource, "/users/<int:user_id>", endpoint="user_by_id")
 api.add_resource(UserList, "/users", endpoint="users")
 api.add_resource(ProductList, "/products", endpoint="products")
 api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
-api.add_resource(BannerList, "/home/banners", endpoint="banners")
-api.add_resource(CategoryImageList, "/home/categories", endpoint="categoriesimages")
+api.add_resource(BannerList, "/home/banner", endpoint="banners")
+api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages")
 api.add_resource(CategoriesList, "/categories", endpoint="categories")
 api.add_resource(CartList, "/cart", endpoint="carts")
+api.add_resource(ShippingAdress, "/shipping_address", endpoint="shipping_addresses")
+
 
 
 
@@ -39,6 +47,8 @@ def register_views():
     apispec.spec.path(view=ProductDetail, app=current_app)
     apispec.spec.components.schema("CartSchema", schema=CartSchema)
     apispec.spec.path(view=CartList, app=current_app)
+    apispec.spec.components.schema("ShippingSchema", schema=ShippingSchema)
+    apispec.spec.path(view=ShippingAdress, app=current_app)
 
 @blueprint.errorhandler(ValidationError)
 def handle_marshmallow_error(e):

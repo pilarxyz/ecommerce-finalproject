@@ -33,11 +33,14 @@ class CategoriesList(Resource):
             FROM categories
             """
         ).fetchall()
-        return {'data': CategoriesSchema(many=True).dump(categories)}, 200
 
         if not categories:
           return {'message': 'Categories not found'}, 404
+        
+        return {'data': CategoriesSchema(many=True).dump(categories)}, 200
 
     def error_handler(self, error):
         return {'message': str(error)}, 400
+
+# access control allow origin
 

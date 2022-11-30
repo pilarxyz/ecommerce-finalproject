@@ -34,10 +34,11 @@ class BannerList(Resource):
             JOIN images ON banners.image_id = images.id
             """
         ).fetchall()
-        return {'data': BannerSchema(many=True).dump(banners)}, 200
       
         if not banners:
           return {'message': 'Banners not found'}, 404
+        
+        return {'data': BannerSchema(many=True).dump(banners)}, 200
     
     def error_handler(self, error):
         return {'message': str(error)}, 400
@@ -74,10 +75,11 @@ class CategoryImageList(Resource):
                 LEFT JOIN images ON product__images.image_id = images.id
                 """
             ).fetchall()
-        return {'data': CategoryImageSchema(many=True).dump(category)}, 200
       
         if not category:
             return {'message': 'Category not found'}, 404      
+        
+        return {'data': CategoryImageSchema(many=True).dump(category)}, 200
         
 
     def error_handler(self, error):
