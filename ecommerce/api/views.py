@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_cors import CORS
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, UserList, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress
 from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema
 
 
@@ -17,8 +17,6 @@ CORS(blueprint)
 # CORS(blueprint, resources={r"/api/*": {"origins": "*"}})
 
 
-api.add_resource(UserResource, "/users/<int:user_id>", endpoint="user_by_id")
-api.add_resource(UserList, "/users", endpoint="users")
 api.add_resource(ProductList, "/products", endpoint="products")
 api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
 api.add_resource(BannerList, "/home/banner", endpoint="banners")
@@ -26,6 +24,7 @@ api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages
 api.add_resource(CategoriesList, "/categories", endpoint="categories")
 api.add_resource(CartList, "/cart", endpoint="carts")
 api.add_resource(ShippingAdress, "/shipping_address", endpoint="shipping_addresses")
+api.add_resource(UserResource, "/user", endpoint="user")
 
 
 
@@ -34,7 +33,6 @@ api.add_resource(ShippingAdress, "/shipping_address", endpoint="shipping_address
 def register_views():
     apispec.spec.components.schema("UserSchema", schema=UserSchema)
     apispec.spec.path(view=UserResource, app=current_app)
-    apispec.spec.path(view=UserList, app=current_app)
     apispec.spec.components.schema("ProductSchema", schema=ProductSchema)
     apispec.spec.path(view=ProductList, app=current_app)
     apispec.spec.components.schema("BannerSchema", schema=BannerSchema)

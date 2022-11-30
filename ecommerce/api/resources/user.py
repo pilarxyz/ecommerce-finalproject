@@ -1,26 +1,20 @@
-from flask import request
+from flask import request, jsonify
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
-from ecommerce.api.schemas import UserSchema
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from ecommerce.api.schemas import UserSchema, ChangeShippingSchema
 from ecommerce.models import User
 from ecommerce.extensions import db
 from ecommerce.commons.pagination import paginate
 
 
 class UserResource(Resource):
-    """Single object resource
-
+    """Creation and get_detail
     ---
     get:
       tags:
-        - api
-      summary: Get a user
-      description: Get a single user by ID
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
+        - USERS
+      summary: Get user detail
+      description: Get user detail
       responses:
         200:
           content:
@@ -28,142 +22,108 @@ class UserResource(Resource):
               schema:
                 type: object
                 properties:
-                  user: UserSchema
-        404:
-          description: user does not exists
-    put:
-      tags:
-        - api
-      summary: Update a user
-      description: Update a single user by ID
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              UserSchema
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: user updated
-                  user: UserSchema
-        404:
-          description: user does not exists
-    delete:
-      tags:
-        - api
-      summary: Delete a user
-      description: Delete a single user by ID
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: user deleted
-        404:
-          description: user does not exists
+                  users:
+                    type: array
+                    items: UserSchema
     """
 
-    method_decorators = [jwt_required()]
+    @jwt_required()
+    def get(self):
+        user_id = get_jwt_identity()
+        user = db.session.query(User).filter_by(id=user_id).first()
 
-    def get(self, user_id):
-        schema = UserSchema()
-        user = User.query.get_or_404(user_id)
-        return {"user": schema.dump(user)}
-
-    def put(self, user_id):
-        schema = UserSchema(partial=True)
-        user = User.query.get_or_404(user_id)
-        user = schema.load(request.json, instance=user)
-
-        db.session.commit()
-
-        return {"msg": "user updated", "user": schema.dump(user)}
-
-    def delete(self, user_id):
-        user = User.query.get_or_404(user_id)
-        db.session.delete(user)
-        db.session.commit()
-
-        return {"msg": "user deleted"}
-
-
-class UserList(Resource):
-    """Creation and get_all
-
+        if not user:
+            return {'message': 'User not found'}, 404
+        
+        return jsonify(
+            {
+                'data': UserSchema().dump(user)
+            }
+        )
+        
+class ChangeShippingAddress(Resource):
+    """Creation and get_detail
     ---
-    get:
-      tags:
-        - api
-      summary: Get a list of users
-      description: Get a list of paginated users
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/PaginatedResult'
-                  - type: object
-                    properties:
-                      results:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/UserSchema'
     post:
       tags:
-        - api
-      summary: Create a user
-      description: Create a new user
-      requestBody:
-        content:
-          application/json:
-            schema:
-              UserSchema
+        - USERS
+      summary: Change shipping address
+      description: Change shipping address
       responses:
-        201:
+        200:
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  msg:
-                    type: string
-                    example: user created
-                  user: UserSchema
+                  users:
+                    type: array
+                    items: UserSchema
     """
-
-    method_decorators = [jwt_required()]
-
-    def get(self):
-        schema = UserSchema(many=True)
-        query = User.query
-        return paginate(query, schema)
-
+  
+    @jwt_required()
     def post(self):
-        schema = UserSchema()
-        user = schema.load(request.json)
-
-        db.session.add(user)
+        user_id = get_jwt_identity()
+        user = db.session.execute(
+            """
+            UPDATE users
+            SET shipping_address = :shipping_address
+            WHERE id = :user_id
+            """,
+            {"shipping_address": request.json['shipping_address'], "user_id": user_id}
+        )
         db.session.commit()
+        return {'message': 'Shipping address changed'}, 200
+        
+        return jsonify(
+            {
+                'data': UserSchema().dump(user)
+            }
+        )
 
-        return {"msg": "user created", "user": schema.dump(user)}, 201
+class Balance(Resource):
+    """Creation and get_detail
+    ---
+    post:
+      tags:
+        - USERS
+      summary: Top up balance
+      description: Top up balance
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items: UserSchema
+    """
+  
+    @jwt_required()
+    def post(self):
+        user_id = get_jwt_identity()
+        user = db.session.execute(
+            """
+            UPDATE users
+            SET balance = balance + :balance
+            WHERE id = :user_id
+            """,
+            {"balance": request.json['balance'], "user_id": user_id}
+        )
+        db.session.commit()
+        return {'message': 'Balance topped up'}, 200
+      
+    @jwt_required()
+    def get(self):
+        user_id = get_jwt_identity()
+        user = db.session.execute(
+            """
+            SELECT balance
+            FROM users
+            WHERE id = :user_id
+            """,
+            {"user_id": user_id}
+        ).fetchone()
+        return {'balance': user[0]}, 200
