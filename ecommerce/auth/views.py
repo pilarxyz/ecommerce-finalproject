@@ -180,7 +180,7 @@ def register():
     
     return jsonify(
         {
-            "message": "User created",
+            "message": "success, user created",
         }
     ), 200 
 
