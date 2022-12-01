@@ -16,7 +16,7 @@ class CartSchema(ma.SQLAlchemyAutoSchema):
 class ShippingSchema(ma.SQLAlchemyAutoSchema):
     
     name = ma.String()
-    price = ma.String()
+    price = ma.Integer()
 
     class Meta:
         ordered = True
