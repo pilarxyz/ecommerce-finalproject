@@ -19,5 +19,7 @@ setup(
         "passlib",
         "apispec[yaml]",
         "apispec-webframeworks",
+        "flask-apispec",
+        "flask-cors",
     ]
 )

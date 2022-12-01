@@ -297,3 +297,5 @@ def check_if_token_revoked(jwt_headers, jwt_payload):
 def register_views():
     apispec.spec.path(view=login, app=app)
     apispec.spec.path(view=register, app=app)
+    apispec.spec.path(view=refresh, app=app)
+    apispec.spec.path(view=revoke_access_token, app=app)

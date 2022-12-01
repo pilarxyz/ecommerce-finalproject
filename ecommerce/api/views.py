@@ -3,29 +3,40 @@ from flask_restful import Api
 from flask_cors import CORS
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress
-from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete
+from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema
 
 
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
-CORS(blueprint)
 
-# add CORS support
-# from flask_cors import CORS
-# CORS(blueprint, resources={r"/api/*": {"origins": "*"}})
-
-
+#product
 api.add_resource(ProductList, "/products", endpoint="products")
 api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
+api.add_resource(ProductCreate, "/products", endpoint="product_create")
+api.add_resource(ProductUpdate, "/products/<string:id>", endpoint="product_update")
+api.add_resource(ProductDelete, "/products/<string:id>", endpoint="product_delete")
+
+
 api.add_resource(BannerList, "/home/banner", endpoint="banners")
 api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages")
+
+#categories
 api.add_resource(CategoriesList, "/categories", endpoint="categories")
+api.add_resource(CategoriesDetail, "/categories/<string:id>", endpoint="category_by_id")
+api.add_resource(CategoriesCreate, "/categories", endpoint="category_create")
+api.add_resource(CategoriesUpdate, "/categories/<string:id>", endpoint="category_update")
+api.add_resource(CategoriesDelete, "/categories/<string:id>", endpoint="category_delete")
+
 api.add_resource(CartList, "/cart", endpoint="carts")
 api.add_resource(ShippingAdress, "/shipping_address", endpoint="shipping_addresses")
 api.add_resource(UserResource, "/user", endpoint="user")
-
+api.add_resource(ChangeShippingAddress, "/user/shipping_address", endpoint="change_shipping_address")
+api.add_resource(Balance, "/user/balance", endpoint="balance")
+api.add_resource(GetBalance, "/user/balance", endpoint="get_balance")
+api.add_resource(GetOrdersUser, "/orders", endpoint="get_orders_user")
+api.add_resource(TotalSales, "/sales", endpoint="total_sales")
 
 
 
@@ -33,20 +44,42 @@ api.add_resource(UserResource, "/user", endpoint="user")
 def register_views():
     apispec.spec.components.schema("UserSchema", schema=UserSchema)
     apispec.spec.path(view=UserResource, app=current_app)
+    
+    #product
     apispec.spec.components.schema("ProductSchema", schema=ProductSchema)
     apispec.spec.path(view=ProductList, app=current_app)
+    apispec.spec.components.schema("ProductDetailSchema", schema=ProductDetailSchema)
+    apispec.spec.path(view=ProductDetail, app=current_app)
+    apispec.spec.path(view=ProductCreate, app=current_app)
+    apispec.spec.path(view=ProductUpdate, app=current_app)
+    apispec.spec.path(view=ProductDelete, app=current_app)
+
+
     apispec.spec.components.schema("BannerSchema", schema=BannerSchema)
     apispec.spec.path(view=BannerList, app=current_app)
+    
+    #categories
     apispec.spec.components.schema("CategoryImageSchema", schema=CategoryImageSchema)
     apispec.spec.path(view=CategoryImageList, app=current_app)
     apispec.spec.components.schema("CategoriesSchema", schema=CategoriesSchema)
     apispec.spec.path(view=CategoriesList, app=current_app)
-    apispec.spec.components.schema("ProductDetailSchema", schema=ProductDetailSchema)
-    apispec.spec.path(view=ProductDetail, app=current_app)
+    apispec.spec.path(view=CategoriesDetail, app=current_app)
+    apispec.spec.path(view=CategoriesCreate, app=current_app)
+    apispec.spec.path(view=CategoriesUpdate, app=current_app)
+    apispec.spec.path(view=CategoriesDelete, app=current_app)
+
     apispec.spec.components.schema("CartSchema", schema=CartSchema)
     apispec.spec.path(view=CartList, app=current_app)
     apispec.spec.components.schema("ShippingSchema", schema=ShippingSchema)
     apispec.spec.path(view=ShippingAdress, app=current_app)
+    apispec.spec.components.schema("ChangeShippingSchema", schema=ShippingSchema)
+    apispec.spec.path(view=ChangeShippingAddress, app=current_app)
+    apispec.spec.components.schema("GetBalanceSchema", schema=GetBalanceSchema)
+    apispec.spec.path(view=GetBalance, app=current_app)
+    apispec.spec.path(view=Balance, app=current_app)
+    apispec.spec.components.schema("ListOrdersSchema", schema=ListOrdersSchema)
+    apispec.spec.path(view=GetOrdersUser, app=current_app)
+    apispec.spec.path(view=TotalSales, app=current_app)
 
 @blueprint.errorhandler(ValidationError)
 def handle_marshmallow_error(e):
