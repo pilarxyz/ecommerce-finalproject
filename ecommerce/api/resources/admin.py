@@ -12,7 +12,7 @@ class GetOrdersUser(Resource):
     ---
     get:
         tags:
-            - ADMIN
+            - ORDERS
         summary: Get all orders from user
         description: Get all orders from user
         responses:
@@ -57,7 +57,7 @@ class TotalSales(Resource):
     ---
     get:
         tags:
-            - ADMIN
+            - HOME
         summary: Get total sales
         description: Get total sales
         responses:

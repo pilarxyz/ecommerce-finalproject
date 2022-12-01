@@ -207,6 +207,7 @@ class ShippingPrice(Resource):
             }
         )
         
+        
 class ShippingAdress(Resource):
     """Get shipping address
 
@@ -231,7 +232,7 @@ class ShippingAdress(Resource):
     @jwt_required()
     def get(self):
         user_id = get_jwt_identity()
-        user = Users.query.filter_by(id=user_id).first()
+        user = User.query.filter_by(id=user_id).first()
         if not user:
             return {'message': 'User not found'}, 404
         return jsonify(
@@ -239,3 +240,33 @@ class ShippingAdress(Resource):
                 'data': ShippingAdressSchema().dump(user)
             }
         )
+
+class DeleteCart(Resource):
+    """Delete cart
+
+    ---
+    delete:
+        tags:
+            - CART
+        summary: Delete cart
+        description: Delete cart
+        responses:
+            200:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+    """
+    
+    @jwt_required()
+    def delete(self):
+        user_id = get_jwt_identity()
+        cart = Carts.query.filter_by(user_id=user_id).first()
+        if not cart:
+            return {'message': 'Cart not found'}, 404
+        db.session.delete(cart)
+        db.session.commit()
+        return {'message': 'Cart deleted'}, 200

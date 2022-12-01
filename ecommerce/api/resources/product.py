@@ -27,7 +27,61 @@ class ProductList(Resource):
                     type: array
                     items: ProductSchema
     """
-    
+  # key 
+  # page 1
+# page_size 100
+# sort_by Price a_z, Price z_a
+# category Id category a, id category b
+# price 0,10000
+# condition used
+# product_name name 
+
+    # def get(self):
+    #     sort_by = request.args.get('sort_by', 'Price a_z', type=str)
+    #     category = request.args.get('category', None, type=str)
+    #     price = request.args.get('price', None, type=str)
+    #     condition = request.args.get('condition', None, type=str)
+    #     product_name = request.args.get('product_name', None, type=str)
+
+    #     if sort_by == 'Price a_z':
+    #         sort_by = 'price'
+    #     elif sort_by == 'Price z_a':
+    #         sort_by = 'price desc'
+    #     else:
+    #         sort_by = 'price'
+          
+    #     if category:
+    #         category = category.split(',')
+    #         category = [int(i) for i in category]
+          
+    #     if price:
+    #         price = price.split(',')
+    #         price = [int(i) for i in price]
+          
+    #     if condition:
+    #         condition = condition.split(',')
+            
+    #     if product_name:
+    #         product_name = product_name.split(',')
+    #         product_name = [str(i) for i in product_name]
+          
+    #     products = db.session.execute(
+    #         """
+    #         SELECT products.id, products.title, products.price, products.size, products.condition, images.image_url
+    #         FROM products
+    #         JOIN product__images ON products.id = product__images.product_id
+    #         JOIN images ON product__images.image_id = images.id
+    #         WHERE products.title IN :product_name
+    #         GROUP BY products.id, products.title, products.price, products.size, products.condition, images.image_url
+    #         """,
+    #         {"product_name": product_name}
+    #     ).fetchall()
+      
+    #     if not products:
+          
+
+            
+
     def get(self):
         products = db.session.execute(
             """
@@ -315,198 +369,3 @@ class ProductDelete(Resource):
     
     def error_handler(self, error):
         return {'message': str(error)}, 400
-      
-# class ProductCreate(Resource):
-#     """Creation and get_all
-  
-#     ---
-#     post:
-#       tags:
-#         - PRODUCTS
-#       summary: Create new product
-#       description: Create new product
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               type: object
-#               properties:
-#                 title:
-#                   type: string
-#                 product_detail:
-#                   type: string
-#                 size:
-#                   type: string
-#                 price:
-#                   type: integer
-#                 condition:
-#                   type: string
-#                 category_id:
-#                   type: integer
-#                 image_url:
-#                   type: string
-#       responses:
-#         200:
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   product:
-#                     type: array
-#                     items: ProductSchema
-#     """
-#     @jwt_required()
-#     def post(self):
-#         data = request.get_json()
-        
-#         product = Products(
-#             title=data['title'],
-#             product_detail=data['product_detail'],
-#             size=data['size'],
-#             price=data['price'],
-#             condition=data['condition'],
-#             category_id=data['category_id']
-#         )
-        
-#         db.session.add(product)
-#         db.session.commit()
-        
-#         image = Images(
-#             image_url=data['image_url']
-#         )
-        
-#         db.session.add(image)
-#         db.session.commit()
-        
-#         product_image = Product_Images(
-#             product_id=product.id,
-#             image_id=image.id
-#         )
-        
-#         db.session.add(product_image)
-#         db.session.commit()
-        
-#         return {'message': 'Product added'}, 201
-    
-#     def error_handler(self, error):
-#         return {'message': str(error)}, 400
-      
-# class ProductUpdate(Resource):
-#     """Creation and get_all
-  
-#     ---
-#     put:
-#       tags:
-#         - PRODUCTS
-#       summary: Update product
-#       description: Update product
-#       parameters:
-#         - in: path
-#           name: id
-#           schema:
-#             type: string
-#       requestBody:
-#         content:
-#           application/json:
-#             schema:
-#               type: object
-#               properties:
-#                 title:
-#                   type: string
-#                 product_detail:
-#                   type: string
-#                 size:
-#                   type: string
-#                 price:
-#                   type: integer
-#                 condition:
-#                   type: string
-#                 category_id:
-#                   type: integer
-#                 image_url:
-#                   type: string
-#       responses:
-#         200:
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   product:
-#                     type: array
-#                     items: ProductSchema
-#     """
-    
-#     @jwt_required()    
-#     def put(self, id):
-#         data = request.get_json()
-        
-#         product = Products.query.filter_by(id=id).first()
-  
-#         if not product:
-#           return {'message': 'Product not found'}, 404
-      
-#         product.title = data['title']
-#         product.product_detail = data['product_detail']
-#         product.size = data['size']
-#         product.price = data['price']
-#         product.condition = data['condition']
-#         product.category_id = data['category_id']
-      
-#         db.session.commit()
-      
-#         image = Images.query.filter_by(id=product.id).first()
-      
-#         if not image:
-#           return {'message': 'Image not found'}, 404
-      
-#         image.image_url = data['image_url']
-      
-#         db.session.commit()
-      
-#         return {'message': 'Product updated'}, 200
-      
-#     def error_handler(self, error):
-#         return {'message': str(error)}, 400
-      
-# class ProductDelete(Resource):
-#     """Creation and get_all
-  
-#     ---
-#     delete:
-#       tags:
-#         - PRODUCTS
-#       summary: Delete product
-#       description: Delete product
-#       parameters:
-#         - in: path
-#           name: id
-#           schema:
-#             type: string
-#       responses:
-#         200:
-#           content:
-#             application/json:
-#               schema:
-#                 type: object
-#                 properties:
-#                   product:
-#                     type: array
-#                     items: ProductSchema
-#     """
-    
-#     @jwt_required()    
-#     def delete(self, id):
-#         product = Products.query.get(id)
-        
-#         if not product:
-#           return {'message': 'Product not found'}, 404
-        
-#         db.session.delete(product)
-#         db.session.commit()
-        
-#         return {'message': 'Product deleted'}, 201
-    
-#     def error_handler(self, error):
-#         return {'message': str(error)}, 400

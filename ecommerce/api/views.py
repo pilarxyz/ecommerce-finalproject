@@ -3,8 +3,8 @@ from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete
-from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice
+from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema, ShippingAdressSchema
 
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
@@ -16,7 +16,6 @@ CORS(blueprint)
 #product
 api.add_resource(ProductList, "/products", endpoint="products")
 api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
-
 api.add_resource(ProductCreate, "/products", endpoint="product_create")
 api.add_resource(ProductUpdate, "/products/<string:id>", endpoint="product_update")
 api.add_resource(ProductDelete, "/products/<string:id>", endpoint="product_delete")
@@ -32,8 +31,12 @@ api.add_resource(CategoriesCreate, "/categories", endpoint="category_create")
 api.add_resource(CategoriesUpdate, "/categories/<string:id>", endpoint="category_update")
 api.add_resource(CategoriesDelete, "/categories/<string:id>", endpoint="category_delete")
 
+#cart
 api.add_resource(CartList, "/cart", endpoint="carts")
-api.add_resource(ShippingAdress, "/shipping_address", endpoint="shipping_addresses")
+api.add_resource(ShippingAdress, "user/shipping_address", endpoint="shipping_addresses")
+api.add_resource(ShippingPrice, "/shipping_price", endpoint="shipping_price")
+
+
 api.add_resource(UserResource, "/user", endpoint="user")
 api.add_resource(ChangeShippingAddress, "/user/shipping_address", endpoint="change_shipping_address")
 api.add_resource(Balance, "/user/balance", endpoint="balance")
@@ -71,10 +74,15 @@ def register_views():
     apispec.spec.path(view=CategoriesUpdate, app=current_app)
     apispec.spec.path(view=CategoriesDelete, app=current_app)
 
+    # cart
     apispec.spec.components.schema("CartSchema", schema=CartSchema)
     apispec.spec.path(view=CartList, app=current_app)
     apispec.spec.components.schema("ShippingSchema", schema=ShippingSchema)
     apispec.spec.path(view=ShippingAdress, app=current_app)
+    apispec.spec.path(view=ShippingPrice, app=current_app)
+    
+    
+    
     apispec.spec.components.schema("ChangeShippingSchema", schema=ShippingSchema)
     apispec.spec.path(view=ChangeShippingAddress, app=current_app)
     apispec.spec.components.schema("GetBalanceSchema", schema=GetBalanceSchema)

@@ -224,3 +224,31 @@ class GetUserOrderDetails(Resource):
                 'data': UserSchema().dump(user)
             }
         )
+ 
+#   Berupa informasi mengenai pesanan yang telah dilakukan oleh pengguna.
+# Bobot nilai: 1 poin
+# Catatan: “price” dari products disini adalah harga asli dari product * jumlah
+# product yang di checkout.
+# Metode: GET
+
+
+# class GetUserOrderHistory(Resource):
+#     """Creation and get_detail
+#     ---
+#     get:
+#       tags:
+#         - USERS
+#       summary: Get user order history
+#       description: Get user order history
+#       responses:
+#         200:
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   users:
+#                     type: array
+#                     items: UserSchema
+#     """
+  
