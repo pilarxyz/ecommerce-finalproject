@@ -1,19 +1,22 @@
 from flask import Blueprint, current_app, jsonify
 from flask_restful import Api
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
 from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete
 from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema
 
 
-
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
+
+#add cross origin to all routes
+CORS(blueprint)
 
 #product
 api.add_resource(ProductList, "/products", endpoint="products")
 api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
+
 api.add_resource(ProductCreate, "/products", endpoint="product_create")
 api.add_resource(ProductUpdate, "/products/<string:id>", endpoint="product_update")
 api.add_resource(ProductDelete, "/products/<string:id>", endpoint="product_delete")
@@ -80,6 +83,7 @@ def register_views():
     apispec.spec.components.schema("ListOrdersSchema", schema=ListOrdersSchema)
     apispec.spec.path(view=GetOrdersUser, app=current_app)
     apispec.spec.path(view=TotalSales, app=current_app)
+    
 
 @blueprint.errorhandler(ValidationError)
 def handle_marshmallow_error(e):

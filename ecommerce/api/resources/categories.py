@@ -1,9 +1,10 @@
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from ecommerce.api.schemas import CategoriesSchema
-from ecommerce.models import Categories
+from ecommerce.models import Categories, User
 from ecommerce.extensions import db, ma
+from flask_cors import cross_origin
 
 class CategoriesList(Resource):
     """Creation and get_all
@@ -120,13 +121,14 @@ class CategoriesCreate(Resource):
         return {'message': str(error)}, 400
       
 class CategoriesUpdate(Resource):
+#  cross_origin() # this is for cors
     """Creation and get_detail
-
+    
     ---
     put:
       tags:
         - CATEGORIES
-      summary: Update category
+      summary: Update category  
       description: Update category
       responses:
         200:
@@ -134,13 +136,11 @@ class CategoriesUpdate(Resource):
             application/json:
               schema:
                 type: object
-                properties:
+                properties: 
                   categories:
                     type: array
                     items: CategoriesSchema
     """
-
-    # only admin can access this method with jwt_required
     @jwt_required()
     def put(self, id):
         user_id = get_jwt_identity()
@@ -148,16 +148,34 @@ class CategoriesUpdate(Resource):
         if user.is_admin:
             data = request.get_json()
             category = db.session.query(Categories).filter_by(id=id).first()
-            if not category:
-              return {'message': 'Category not found'}, 404
             category.title = data['title']
             db.session.commit()
             return {'data': 'Category updated'}, 200
         else:
             return {'message': 'You are not admin'}, 401
-        
+          
     def error_handler(self, error):
         return {'message': str(error)}, 400
+    
+  
+      
+      
+      
+    #     user_id = get_jwt_identity()
+    #     user = db.session.query(User).filter_by(id=user_id).first()
+    #     if user.is_admin:
+    #         data = request.get_json()
+    #         category = db.session.query(Categories).filter_by(id=id).first()
+    #         if not category:
+    #           return {'message': 'Category not found'}, 404
+    #         category.title = data['title']
+    #         db.session.commit()
+    #         return {'data': 'Category updated'}, 200
+    #     else:
+    #         return {'message': 'You are not admin'}, 401
+        
+    # def error_handler(self, error):
+    #     return {'message': str(error)}, 400
     
 class CategoriesDelete(Resource):
     """Creation and get_detail

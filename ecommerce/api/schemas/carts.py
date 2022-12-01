@@ -1,6 +1,7 @@
 from ecommerce.models import Carts
 from ecommerce.extensions import ma, db
 
+
 class CartSchema(ma.SQLAlchemyAutoSchema):
     
     id = ma.String()
@@ -13,6 +14,14 @@ class CartSchema(ma.SQLAlchemyAutoSchema):
         ordered = True
         
 class ShippingSchema(ma.SQLAlchemyAutoSchema):
+    
+    name = ma.String()
+    price = ma.String()
+
+    class Meta:
+        ordered = True
+        
+class ShippingAdressSchema(ma.SQLAlchemyAutoSchema):
     
     id = ma.String()
     name = ma.String()
