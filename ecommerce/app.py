@@ -6,6 +6,7 @@ from ecommerce.extensions import apispec
 from ecommerce.extensions import db
 from ecommerce.extensions import jwt
 from ecommerce.extensions import migrate
+from flask_cors import CORS
 
 # cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -15,7 +16,8 @@ def create_app(testing=False):
     app = Flask("ecommerce")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/app'
     app.config.from_object("ecommerce.config")
-
+    CORS(app)
+    
     if testing is True:
         app.config["TESTING"] = True
     
