@@ -23,7 +23,7 @@ api.add_resource(ProductDelete, "/products/<string:id>", endpoint="product_delet
 #home
 api.add_resource(BannerList, "/home/banner", endpoint="banners")
 api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages")
-api.add_resource(GetImage, "/image/<image_name>", endpoint="get_image")
+api.add_resource(GetImage, "/image", endpoint="get_image")
 api.add_resource(UploadImage, "/image", endpoint="upload_image")
 
 #categories

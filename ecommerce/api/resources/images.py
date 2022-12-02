@@ -82,7 +82,7 @@ class GetImage(Resource):
                                     items: ImageSchema
     """
     
-    def get(self, image_name):
+    def get(self):
         image = db.session.execute(
             f"""
             SELECT id, name, CONCAT('{config.BACKEND_HOST}/', image_url) AS image
