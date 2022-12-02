@@ -6,17 +6,18 @@ from initialization import Model
 
 def inference_process(image_input, model):
     # Data Label
-    labels_data ={
-        0: "T-Shirt",
-        1: "Trouser",
-        2: "Pullover",
+    labels_data = {
+        0: "Ankle Boot",
+        1: "Bag",
+        2: "Coat",
         3: "Dress",
-        4: "Coat",
-        5: "Sandal",
-        6: "Shirt",
-        7: "Sneaker",
-        8: "Bag",
-        9: "Ankle Boot"
+        4: "Hat",
+        5: "Pullover",
+        6: "Sandal",
+        7: "Shirt",
+        8: "Sneaker",
+        9: "T-Shirt",
+        10: "Trouser" 
     }
 
     # Prediction
