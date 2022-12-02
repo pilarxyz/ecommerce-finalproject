@@ -10,7 +10,7 @@ input_image = input('Enter image file name: ')
 # Initialization
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-PATH = 'mobilenetv2_model.pt'
+PATH = 'model_25K_data_no_augmentation'
 model = Model()
 model.load_state_dict(torch.load(PATH))
 model.eval()
