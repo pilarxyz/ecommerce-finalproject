@@ -18,6 +18,8 @@ def create_app(testing=False):
     app.config.from_object("ecommerce.config")
     CORS(app)
     
+    # serve static files
+    
     if testing is True:
         app.config["TESTING"] = True
     

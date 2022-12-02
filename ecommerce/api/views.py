@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage
 from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema, ShippingAdressSchema
 
 
@@ -20,9 +20,11 @@ api.add_resource(ProductCreate, "/products", endpoint="product_create")
 api.add_resource(ProductUpdate, "/products/<string:id>", endpoint="product_update")
 api.add_resource(ProductDelete, "/products/<string:id>", endpoint="product_delete")
 
-
+#home
 api.add_resource(BannerList, "/home/banner", endpoint="banners")
 api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages")
+api.add_resource(GetImage, "/image/<image_name>", endpoint="get_image")
+api.add_resource(UploadImage, "/image", endpoint="upload_image")
 
 #categories
 api.add_resource(CategoriesList, "/categories", endpoint="categories")
@@ -33,10 +35,12 @@ api.add_resource(CategoriesDelete, "/categories/<string:id>", endpoint="category
 
 #cart
 api.add_resource(CartList, "/cart", endpoint="carts")
-api.add_resource(ShippingAdress, "user/shipping_address", endpoint="shipping_addresses")
+api.add_resource(ShippingAdress, "/user/shipping_address", endpoint="shipping_addresses")
 api.add_resource(ShippingPrice, "/shipping_price", endpoint="shipping_price")
+api.add_resource(Cart, "/cart", endpoint="cart")
+api.add_resource(DeleteCart, "/cart/<string:id>", endpoint="delete_cart")
 
-
+#user
 api.add_resource(UserResource, "/user", endpoint="user")
 api.add_resource(ChangeShippingAddress, "/user/shipping_address", endpoint="change_shipping_address")
 api.add_resource(Balance, "/user/balance", endpoint="balance")
@@ -63,6 +67,8 @@ def register_views():
 
     apispec.spec.components.schema("BannerSchema", schema=BannerSchema)
     apispec.spec.path(view=BannerList, app=current_app)
+    apispec.spec.path(view=GetImage, app=current_app)
+    apispec.spec.path(view=UploadImage, app=current_app)
     
     #categories
     apispec.spec.components.schema("CategoryImageSchema", schema=CategoryImageSchema)
@@ -80,6 +86,8 @@ def register_views():
     apispec.spec.components.schema("ShippingSchema", schema=ShippingSchema)
     apispec.spec.path(view=ShippingAdress, app=current_app)
     apispec.spec.path(view=ShippingPrice, app=current_app)
+    apispec.spec.path(view=Cart, app=current_app)
+    apispec.spec.path(view=DeleteCart, app=current_app)
     
     
     

@@ -214,7 +214,7 @@ class ShippingAdress(Resource):
     ---
     get:
         tags:
-            - CART
+            - USERS
         summary: Get shipping address
         description: Get shipping address
         responses:

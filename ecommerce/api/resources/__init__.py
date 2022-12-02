@@ -2,8 +2,10 @@ from ecommerce.api.resources.user import UserResource, ChangeShippingAddress, Ba
 from ecommerce.api.resources.product import ProductList, ProductDetail, ProductCreate, ProductUpdate, ProductDelete
 from ecommerce.api.resources.home import BannerList, CategoryImageList
 from ecommerce.api.resources.categories import CategoriesList, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete
-from ecommerce.api.resources.carts import CartList, ShippingAdress, ShippingPrice, Carts, DeleteCart
+from ecommerce.api.resources.carts import CartList, ShippingAdress, ShippingPrice, Cart, DeleteCart
+from ecommerce.api.resources.admin import GetOrdersUser, TotalSales
+from ecommerce.api.resources.images import GetImage, UploadImage
 
 
 
-__all__ = ["UserResource", "ProductList", "BannerList", "CategoryImageList", "LoginResource", "RegisterResource", "CategoriesList", "ProductDetail", "CartList", "ShippingAddress", "ChangeShippingAddress", "Balance", "GetBalance", "GetOrdersUser", "TotalSales", "ProductCreate", "ProductUpdate", "ProductDelete", "CategoriesDetail", "CategoriesCreate", "CategoriesUpdate", "CategoriesDelete", "ShippingPrice"]
+__all__ = ["UserResource", "ProductList", "BannerList", "CategoryImageList", "LoginResource", "RegisterResource", "CategoriesList", "ProductDetail", "CartList", "ShippingAddress", "ChangeShippingAddress", "Balance", "GetBalance", "GetOrdersUser", "TotalSales", "ProductCreate", "ProductUpdate", "ProductDelete", "CategoriesDetail", "CategoriesCreate", "CategoriesUpdate", "CategoriesDelete", "ShippingPrice", "Cart", "DeleteCart"]
