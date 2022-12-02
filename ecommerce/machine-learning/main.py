@@ -10,7 +10,7 @@ input_image = input('Enter image file name: ')
 # Initialization
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-PATH = 'model_25K_data_no_augmentation'
+PATH = 'model_25K_data_with_flip.pt'
 model = Model()
 model.load_state_dict(torch.load(PATH))
 model.eval()
