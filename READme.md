@@ -28,6 +28,8 @@ Open Chrome - http://127.0.0.1:5000/
 
 API Documentation - http://127.0.0.1:5000/swagger-ui
 
+Front End - [FE](https://gitlab.com/pilarxyz/smart-campus-template)
+
 ## Warning!!
 
 there are still many errors on endpoint that need to be fixed
