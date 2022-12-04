@@ -3,11 +3,11 @@ from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage, GetUserOrderDetails
 from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema, ShippingAdressSchema
 
 
-blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
+blueprint = Blueprint("api", __name__, url_prefix="")
 api = Api(blueprint)
 
 #add cross origin to all routes
@@ -44,9 +44,11 @@ api.add_resource(DeleteCart, "/cart/<string:id>", endpoint="delete_cart")
 api.add_resource(UserResource, "/user", endpoint="user")
 api.add_resource(ChangeShippingAddress, "/user/shipping_address", endpoint="change_shipping_address")
 api.add_resource(Balance, "/user/balance", endpoint="balance")
+api.add_resource(GetUserOrderDetails, "/orders/order", endpoint="user_order_details")
 api.add_resource(GetBalance, "/user/balance", endpoint="get_balance")
 api.add_resource(GetOrdersUser, "/orders", endpoint="get_orders_user")
 api.add_resource(TotalSales, "/sales", endpoint="total_sales")
+
 
 
 
@@ -90,7 +92,6 @@ def register_views():
     apispec.spec.path(view=DeleteCart, app=current_app)
     
     
-    
     apispec.spec.components.schema("ChangeShippingSchema", schema=ShippingSchema)
     apispec.spec.path(view=ChangeShippingAddress, app=current_app)
     apispec.spec.components.schema("GetBalanceSchema", schema=GetBalanceSchema)
@@ -99,6 +100,7 @@ def register_views():
     apispec.spec.components.schema("ListOrdersSchema", schema=ListOrdersSchema)
     apispec.spec.path(view=GetOrdersUser, app=current_app)
     apispec.spec.path(view=TotalSales, app=current_app)
+    apispec.spec.path(view=GetUserOrderDetails, app=current_app)
     
 
 @blueprint.errorhandler(ValidationError)

@@ -12,54 +12,29 @@ from ecommerce import config
 # Response: image file
 
 class UploadImage(Resource):
-    """Creation and get_all
-
-    ---
-    post:
-        tags:
-            - IMAGE
-        summary: Upload image
-        description: Upload image
-        responses:
-            200:
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                images:
-                                    type: array
-                                    items: ImageSchema
-    """
-    
+# create in folder static/images
     @jwt_required()
     def post(self):
         user_id = get_jwt_identity()
-        user = db.session.query(User).filter_by(id=user_id).first()
-        
+        user = User.query.filter_by(id=user_id).first()
         if not user:
             return {'message': 'User not found'}, 404
-        
-        if 'image' not in request.files:
-            return {'message': 'No image found'}, 400
-        
-        image = request.files['image']
-        if image.filename == '':
-            return {'message': 'No image found'}, 400
-        
-        if image:
-            image = Images(
-                image_url=image.filename,
-                user_id=user_id
-            )
-            db.session.add(image)
-            db.session.commit()
-            
-            return jsonify(
-                {
-                    'data': ImageSchema().dump(image)
-                }
-            )
+        if not request.files:
+            return {'message': 'No file found'}, 400
+        file = request.files['file']
+        if not file:
+            return {'message': 'No file found'}, 400
+        if file.filename == '':
+            return {'message': 'No file found'}, 400
+        if not file.filename.rsplit('.', 1)[1].lower() in config.ALLOWED_EXTENSIONS:
+            return {'message': 'File extension not allowed'}, 400
+        image = Images(
+            image_url=file.filename
+        )
+        db.session.add(image)
+        db.session.commit()
+        file.save(config.UPLOAD_FOLDER + file.filename)
+        return {'message': 'Image uploaded successfully'}, 200
 
 class GetImage(Resource):
     """Creation and get_all
@@ -84,8 +59,8 @@ class GetImage(Resource):
     
     def get(self):
         image = db.session.execute(
-            f"""
-            SELECT id, name, CONCAT('{config.BACKEND_HOST}/', image_url) AS image
+            """
+            SELECT id, name, CONCAT('/', image_url) as image
             FROM images
             """
         ).fetchall()

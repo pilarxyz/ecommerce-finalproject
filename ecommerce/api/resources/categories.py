@@ -103,7 +103,6 @@ class CategoriesCreate(Resource):
                     items: CategoriesSchema
     """
 
-    # only admin can access this method with jwt_required
     @jwt_required()
     def post(self):
         user_id = get_jwt_identity()
@@ -121,7 +120,6 @@ class CategoriesCreate(Resource):
         return {'message': str(error)}, 400
       
 class CategoriesUpdate(Resource):
-#  cross_origin() # this is for cors
     """Creation and get_detail
     
     ---
@@ -153,29 +151,6 @@ class CategoriesUpdate(Resource):
             return {'data': 'Category updated'}, 200
         else:
             return {'message': 'You are not admin'}, 401
-          
-    def error_handler(self, error):
-        return {'message': str(error)}, 400
-    
-  
-      
-      
-      
-    #     user_id = get_jwt_identity()
-    #     user = db.session.query(User).filter_by(id=user_id).first()
-    #     if user.is_admin:
-    #         data = request.get_json()
-    #         category = db.session.query(Categories).filter_by(id=id).first()
-    #         if not category:
-    #           return {'message': 'Category not found'}, 404
-    #         category.title = data['title']
-    #         db.session.commit()
-    #         return {'data': 'Category updated'}, 200
-    #     else:
-    #         return {'message': 'You are not admin'}, 401
-        
-    # def error_handler(self, error):
-    #     return {'message': str(error)}, 400
     
 class CategoriesDelete(Resource):
     """Creation and get_detail

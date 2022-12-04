@@ -14,6 +14,7 @@ from flask_cors import CORS
 def create_app(testing=False):
     """Application factory, used to create application"""
     app = Flask("ecommerce")
+    cors = CORS(app, resources={r"*": {"origins": "*"}})
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/app'
     app.config.from_object("ecommerce.config")
     CORS(app)

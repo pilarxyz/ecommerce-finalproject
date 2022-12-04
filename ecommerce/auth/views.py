@@ -12,7 +12,7 @@ from ecommerce.extensions import pwd_context, jwt, apispec
 from ecommerce.auth.helpers import signup_user, revoke_token, is_token_revoked, add_token_to_database
 
 
-blueprint = Blueprint("auth", __name__, url_prefix="/api/v1")
+blueprint = Blueprint("auth", __name__, url_prefix="")
 CORS(blueprint)
 
 

@@ -11,5 +11,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI")
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-BACKEND_HOST = os.getenv("BACKEND_HOST", "localhost:5000")
-
+# BACKEND_HOST = os.getenv("BACKEND_HOST", "localhost:5000")
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "static/images")
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ 
