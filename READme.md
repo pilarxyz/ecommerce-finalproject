@@ -17,6 +17,7 @@ Requirement
 ```
 git clone https://github.com/pilarxyz/ecommerce-finalproject
 cd ecommerce-finalproject
+pip install -r requirements.txt
 flask db init
 flask db migrate
 flask db upgrade
