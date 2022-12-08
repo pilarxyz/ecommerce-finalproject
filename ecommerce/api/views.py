@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage, GetUserOrderDetails
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage, GetUserOrderDetails, CreateOrder
 from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema, ShippingAdressSchema
 
 
@@ -26,6 +26,9 @@ api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages
 api.add_resource(GetImage, "/image", endpoint="get_image")
 api.add_resource(UploadImage, "/image", endpoint="upload_image")
 
+#order
+api.add_resource(CreateOrder, "/order", endpoint="create_order")
+
 #categories
 api.add_resource(CategoriesList, "/categories", endpoint="categories")
 api.add_resource(CategoriesDetail, "/categories/<string:id>", endpoint="category_by_id")
@@ -44,7 +47,7 @@ api.add_resource(DeleteCart, "/cart/<string:id>", endpoint="delete_cart")
 api.add_resource(UserResource, "/user", endpoint="user")
 api.add_resource(ChangeShippingAddress, "/user/shipping_address", endpoint="change_shipping_address")
 api.add_resource(Balance, "/user/balance", endpoint="balance")
-api.add_resource(GetUserOrderDetails, "/orders/order", endpoint="user_order_details")
+api.add_resource(GetUserOrderDetails, "/user/order", endpoint="user_order_details")
 api.add_resource(GetBalance, "/user/balance", endpoint="get_balance")
 api.add_resource(GetOrdersUser, "/orders", endpoint="get_orders_user")
 api.add_resource(TotalSales, "/sales", endpoint="total_sales")
@@ -101,6 +104,9 @@ def register_views():
     apispec.spec.path(view=GetOrdersUser, app=current_app)
     apispec.spec.path(view=TotalSales, app=current_app)
     apispec.spec.path(view=GetUserOrderDetails, app=current_app)
+    
+    #order
+    apispec.spec.path(view=CreateOrder, app=current_app)
     
 
 @blueprint.errorhandler(ValidationError)

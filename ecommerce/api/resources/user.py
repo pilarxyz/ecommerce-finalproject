@@ -221,16 +221,18 @@ class GetUserOrderDetails(Resource):
         ).fetchall()
         
         if not user:
-            return {'message': 'User not found'}, 404
+           return {'data': []}
           
         return jsonify(
             {
+              "data" :[
+                {
                 'id': user[0][4],
                 'created_at': user[0][6],
-                'product' : [
+                'products' : [
                     {
                         'id': user[0][14],
-                        'detail': {
+                        'details': {
                             'quantity': user[0][9],
                             'size': user[0][10],
                         },
@@ -239,7 +241,7 @@ class GetUserOrderDetails(Resource):
                         'name': user[0][11],
                     }
                 ],
-                'status': user[0][15],
+                # 'status': user[0][15],
                 'shipping_method': user[0][8],
                 'shipping_address': {
                     'name': user[0][0],
@@ -248,6 +250,9 @@ class GetUserOrderDetails(Resource):
                     'city': user[0][3],
                 }
             }
+        ]
+        }
         )
+      
                 
         

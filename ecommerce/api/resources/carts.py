@@ -50,7 +50,7 @@ class CartList(Resource):
         ).fetchall()
         
         if not carts:
-            return {'message': 'Cart not found'}, 404
+            return {'data': []}
         
         
         return jsonify(
@@ -59,15 +59,7 @@ class CartList(Resource):
             }
         )
         
-    @jwt_required()
-    def delete(self):
-        user_id = get_jwt_identity()
-        cart = Carts.query.filter_by(user_id=user_id).first()
-        if not cart:
-            return {'message': 'Cart not found'}, 404
-        db.session.delete(cart)
-        db.session.commit()
-        return {'message': 'Cart deleted'}, 200
+
     
 class Cart(Resource):
 #   API untuk menambahkan produk menuju menu ‘cart’ pada user
@@ -115,7 +107,7 @@ class Cart(Resource):
     def post(self):
         user_id = get_jwt_identity()
         data = request.get_json()
-        product_id = data['product_id']
+        product_id = data['id']
         size = data['size']
         quantity = data['quantity']
         cart = Carts.query.filter_by(user_id=user_id, product_id=product_id, size=size).first()
@@ -127,7 +119,8 @@ class Cart(Resource):
             cart = Carts(user_id=user_id, product_id=product_id, size=size, quantity=quantity)
             db.session.add(cart)
             db.session.commit()
-            return {'message': 'Item added to cart'}, 200      
+            return {'message': 'Add to cart Success'}, 200
+        
 
 class ShippingPrice(Resource):
     """Get shipping price
@@ -262,11 +255,13 @@ class DeleteCart(Resource):
     """
     
     @jwt_required()
-    def delete(self):
+    def delete(self, id):
         user_id = get_jwt_identity()
-        cart = Carts.query.filter_by(user_id=user_id).first()
+        cart = Carts.query.filter_by(user_id=user_id, id=id).first()
         if not cart:
             return {'message': 'Cart not found'}, 404
+        
         db.session.delete(cart)
         db.session.commit()
         return {'message': 'Cart deleted'}, 200
+    

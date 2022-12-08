@@ -109,10 +109,12 @@ class CategoriesCreate(Resource):
         user = db.session.query(User).filter_by(id=user_id).first()
         if user.is_admin:
             data = request.get_json()
-            category = Categories(**data)
+            category = Categories(
+                title=data['category_name']
+            )
             db.session.add(category)
             db.session.commit()
-            return {'data': 'Category added'}, 200
+            return {'message': 'Category added'}, 200
         else:
             return {'message': 'You are not admin'}, 401
         
@@ -146,9 +148,9 @@ class CategoriesUpdate(Resource):
         if user.is_admin:
             data = request.get_json()
             category = db.session.query(Categories).filter_by(id=id).first()
-            category.title = data['title']
+            category.title = data['category_name']
             db.session.commit()
-            return {'data': 'Category updated'}, 200
+            return {'message': 'Category updated'}, 200
         else:
             return {'message': 'You are not admin'}, 401
     
@@ -184,7 +186,7 @@ class CategoriesDelete(Resource):
               return {'message': 'Category not found'}, 404
             db.session.delete(category)
             db.session.commit()
-            return {'data': 'Category deleted'}, 200
+            return {'message': 'Category deleted'}, 200
         else:
             return {'message': 'You are not admin'}, 401
         

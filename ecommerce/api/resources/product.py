@@ -4,6 +4,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from ecommerce.api.schemas import ProductSchema, ProductDetailSchema
 from ecommerce.models import Products, Product_Images, Images, Categories, User
 from ecommerce.extensions import db, ma
+from ecommerce import config
+import base64
 
 from ecommerce.commons.pagination import paginate
 
@@ -137,12 +139,13 @@ class ProductDetail(Resource):
     def get(self, id):
         product = db.session.execute(
             """
-            SELECT products.id, products.title, products.product_detail, products.size, products.price, products.condition, products.category_id, images.image_url as images_url, categories.title as category_name
+            SELECT products.id, products.title, products.size, products.product_detail, products.price, products.condition, products.category_id, images.image_url as images_url, categories.title as category_name, array_agg(images.image_url) as images_url, array_agg(products.size) as size
             FROM products
             JOIN categories ON products.category_id = categories.id
             JOIN product__images ON products.id = product__images.product_id
             JOIN images ON product__images.image_id = images.id
             WHERE products.id = :id
+            GROUP BY products.id, products.title, products.product_detail, products.price, products.condition, products.category_id, images.image_url, categories.title
             """,
             {"id": id}
         ).fetchone()
@@ -152,7 +155,7 @@ class ProductDetail(Resource):
         
         return jsonify(
             {
-                "data": ProductDetailSchema().dump(product),
+                "data": ProductDetailSchema().dump(product)
             }
         )
       
@@ -202,43 +205,51 @@ class ProductCreate(Resource):
                     items: ProductDetailSchema
     """
     
-    @jwt_required
+    @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        user = User.query.filter_by(username=current_user).first()
+        user = User.query.filter_by(id=current_user).first()
         if not user.is_admin:
             return {'message': 'You are not admin'}, 403
         
         data = request.get_json()
         product = Products(
-            title=data['title'],
-            product_detail=data['product_detail'],
-            size=data['size'],
+            title=data['product_name'],
+            product_detail=data['description'],
             price=data['price'],
             condition=data['condition'],
-            category=data['category_id']
+            category_id=data['category'],
+            size='L'
         )
         
         db.session.add(product)
         db.session.commit()
         
-        image = Images(
-            image_url=data['image_url']
-        )
+
+        image = data['images'][0]
+        image = image.split(',')[1]
+        image = base64.b64decode(image)
+        image_name = f"{product.id}.png"
+        with open(config.UPLOAD_FOLDER + '/' + image_name, 'wb') as f:
+            f.write(image)
+          
         
+        # add image to database
+        image = Images(
+            name=data['product_name'],
+            image_url=f"/static/images/{image_name}"
+        )
         db.session.add(image)
         db.session.commit()
         
-        product_image = Product_Images(
-            product_id=product.id,
-            image_id=image.id
-        )
-        
+        # add product to product__images
+        product_image = Product_Images(product_id=product.id, image_id=image.id)
         db.session.add(product_image)
-        db.session.commit()
         
-        return {'message': 'Product added'}, 200
-    
+        db.session.commit()
+      
+        return {'message': 'Product created successfully'}, 200
+        
     def error_handler(self, error):
         return {'message': str(error)}, 400
       
@@ -258,20 +269,20 @@ class ProductUpdate(Resource):
           name: id
           schema:
             type: string
-        - in: body
+        - in: body  
           name: body
           schema:
             type: object
             properties:
               title:
                 type: string
-              product_detail:
+              product_detail: 
                 type: string
               size:
                 type: string
-              price:
+              price:  
                 type: integer
-              condition:
+              condition:  
                 type: string
               category_id:
                 type: integer
@@ -288,11 +299,11 @@ class ProductUpdate(Resource):
                     type: array
                     items: ProductDetailSchema
     """
-    
-    @jwt_required
+      
+    @jwt_required()
     def put(self, id):
         current_user = get_jwt_identity()
-        user = User.query.filter_by(username=current_user).first()
+        user = User.query.filter_by(id=current_user).first()
         if not user.is_admin:
             return {'message': 'You are not admin'}, 403
         
@@ -301,25 +312,29 @@ class ProductUpdate(Resource):
         if not product:
             return {'message': 'Product not found'}, 404
         
-        product.title = data['title']
-        product.product_detail = data['product_detail']
-        product.size = data['size']
+        product.title = data['product_name']
+        product.product_detail = data['description']
         product.price = data['price']
         product.condition = data['condition']
-        product.category_id = data['category_id']
+        product.category_id = data['category']
         
         db.session.commit()
         
+        image = data['images'][0]
+        image = image.split(',')[1]
+        image = base64.b64decode(image)
+        image_name = f"{product.id}.png"
+        with open(config.UPLOAD_FOLDER + '/' + image_name, 'wb') as f:
+            f.write(image)
+        
+        # update image to database
         image = Images.query.filter_by(id=product.id).first()
-        if not image:
-            return {'message': 'Image not found'}, 404
-        
-        image.image_url = data['image_url']
+        image.name = data['product_name']
         
         db.session.commit()
         
-        return {'message': 'Product updated'}, 200
-    
+        return {'message': 'Product updated successfully'}, 200
+        
     def error_handler(self, error):
         return {'message': str(error)}, 400
       
@@ -351,21 +366,25 @@ class ProductDelete(Resource):
                     items: ProductDetailSchema
     """
     
-    @jwt_required
+    @jwt_required()
     def delete(self, id):
         current_user = get_jwt_identity()
-        user = User.query.filter_by(username=current_user).first()
+        user = User.query.filter_by(id=current_user).first()
         if not user.is_admin:
             return {'message': 'You are not admin'}, 403
         
-        product = Products.query.filter_by(id=id).first()
-        if not product:
+        product_image = Product_Images.query.filter_by(product_id=id).first()
+        if not product_image:
             return {'message': 'Product not found'}, 404
+          
+        db.session.delete(product_image)
         
+        product = Products.query.filter_by(id=id).first()
         db.session.delete(product)
+        
         db.session.commit()
         
-        return {'message': 'Product deleted'}, 200
-    
+        return {'message': 'Product deleted'}, 200 
+      
     def error_handler(self, error):
         return {'message': str(error)}, 400

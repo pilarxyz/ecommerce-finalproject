@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from ecommerce.api.schemas import ProductSchema, ProductDetailSchema
-from ecommerce.models import Order, Order_Products, Products, Product_Images, Images, User
+from ecommerce.models import Orders, Order_Products, Products, Product_Images, Images, User, Carts
 from ecommerce.extensions import db, ma
 
 class CreateOrder(Resource):
@@ -53,12 +53,22 @@ class CreateOrder(Resource):
                 "message": "Balance is not enough"
             })
         
+#         shipping_address: 
+# address: "Jl. Raya Kebon Jeruk No. 1"
+# city: "Jakarta Barat"
+# name: "John Doe"
+# phone_number: "08123456789"
+# payload
         # create order
-        order = Order(
+        order = Orders(
             user_id=user_id,
             shipping_method=request.json['shipping_method'],
-            shipping_address=request.json['shipping_address'],
-            total_price=total_price
+            address=request.json['shipping_address']['address'],
+            address_name=request.json['shipping_address']['name'],
+            city=request.json['shipping_address']['city'],
+            phone_number=request.json['shipping_address']['phone_number'],
+            shipping_price=total_price,
+            status="pending"
         )
         db.session.add(order)
         db.session.commit()
@@ -68,7 +78,8 @@ class CreateOrder(Resource):
             order_product = Order_Products(
                 order_id=order.id,
                 product_id=cart.product_id,
-                quantity=cart.quantity
+                quantity=cart.quantity,
+                size=cart.size,
             )
             db.session.add(order_product)
             db.session.commit()

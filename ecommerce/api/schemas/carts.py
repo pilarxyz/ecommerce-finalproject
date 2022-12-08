@@ -5,7 +5,7 @@ from ecommerce.extensions import ma, db
 class CartSchema(ma.SQLAlchemyAutoSchema):
     
     id = ma.String()
-    details = ma.String()
+    details = ma.Dict()
     price = ma.String()
     image = ma.String()
     name = ma.String()
