@@ -5,20 +5,27 @@ from ecommerce.models import Products, Product_Images, Images, Categories, User
 from ecommerce.extensions import db, ma
 from ecommerce import config
 import base64
-import ecommerce.machine_learning.initialization as ml
+# from ecommerce.machine.main import Main
 
 class SearchWithImages(Resource):
 
 # request body image base64
 # 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABoMA…TNE3TtPdv//vf/5Kf/3P6/woKTGyoCG/UAAAAAElFTkSuQmCC'
 # response categories name and id
+        # model = Main(img_input=image)
 
-# using machine learning
+# using machine
 
 
     def post(self):
         data = request.get_json()
         image = data['image']
-        image = image.split(',')[1]
-        image = base64.b64decode(image)
-        image = ml.
+
+        model = Main(img_input=image)
+        categories = model.get_categories()
+
+        return jsonify(
+            {
+                'data': categories
+            }
+        )

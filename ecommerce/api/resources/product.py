@@ -253,7 +253,7 @@ class ProductCreate(Resource):
             price=data['price'],
             condition=data['condition'],
             category_id=data['category'],
-            size='S,M,L,XL'
+            size=data['size']
         )
         
         db.session.add(product)

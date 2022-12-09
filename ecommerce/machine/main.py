@@ -1,9 +1,9 @@
 import base64
 import numpy as np
 
-from init import Model
-from preprocessing import Preprocessing
-from inference import Inference
+from ecommerce.machine.init import Model
+from ecommerce.machine.preprocessing import Preprocessing
+from ecommerce.machine.inference import Inference
 
 class Main:
     def __init__(self, img_input):
