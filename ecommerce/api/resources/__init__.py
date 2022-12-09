@@ -6,6 +6,7 @@ from ecommerce.api.resources.carts import CartList, ShippingAdress, ShippingPric
 from ecommerce.api.resources.admin import GetOrdersUser, TotalSales
 from ecommerce.api.resources.images import GetImage, UploadImage
 from ecommerce.api.resources.orders import CreateOrder
+from ecommerce.api.resources.search import SearchWithImages
 
 
-__all__ = ["UserResource", "ProductList", "BannerList", "CategoryImageList", "LoginResource", "RegisterResource", "CategoriesList", "ProductDetail", "CartList", "ShippingAddress", "ChangeShippingAddress", "Balance", "GetBalance", "GetOrdersUser", "TotalSales", "ProductCreate", "ProductUpdate", "ProductDelete", "CategoriesDetail", "CategoriesCreate", "CategoriesUpdate", "CategoriesDelete", "ShippingPrice", "Cart", "DeleteCart", "GetImage", "UploadImage", "GetUserOrderDetails", "CreateOrder"]
+__all__ = ["UserResource", "ProductList", "BannerList", "CategoryImageList", "LoginResource", "RegisterResource", "CategoriesList", "ProductDetail", "CartList", "ShippingAddress", "ChangeShippingAddress", "Balance", "GetBalance", "GetOrdersUser", "TotalSales", "ProductCreate", "ProductUpdate", "ProductDelete", "CategoriesDetail", "CategoriesCreate", "CategoriesUpdate", "CategoriesDelete", "ShippingPrice", "Cart", "DeleteCart", "GetImage", "UploadImage", "GetUserOrderDetails", "CreateOrder", "SearchWithImages"]

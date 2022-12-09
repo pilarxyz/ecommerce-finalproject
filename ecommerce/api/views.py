@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from marshmallow import ValidationError
 from ecommerce.extensions import apispec
-from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage, GetUserOrderDetails, CreateOrder
+from ecommerce.api.resources import UserResource, ProductList, BannerList, CategoryImageList, CategoriesList, ProductDetail, CartList, ShippingAdress, Balance, ChangeShippingAddress, GetBalance, GetOrdersUser, TotalSales, ProductCreate, ProductUpdate, ProductDelete, CategoriesDetail, CategoriesCreate, CategoriesUpdate, CategoriesDelete, ShippingPrice, Cart, DeleteCart, GetImage, UploadImage, GetUserOrderDetails, CreateOrder, SearchWithImages
 from ecommerce.api.schemas import UserSchema, ProductSchema, BannerSchema, CategoryImageSchema, CategoriesSchema, ProductDetailSchema, CartSchema, ShippingSchema, ChangeShippingSchema, GetBalanceSchema, ListOrdersSchema, ShippingAdressSchema
 
 
@@ -17,14 +17,16 @@ CORS(blueprint)
 api.add_resource(ProductList, "/products", endpoint="products")
 api.add_resource(ProductDetail, "/products/<string:id>", endpoint="product_by_id")
 api.add_resource(ProductCreate, "/products", endpoint="product_create")
-api.add_resource(ProductUpdate, "/products/<string:id>", endpoint="product_update")
+api.add_resource(ProductUpdate, "/products", endpoint="product_update")
 api.add_resource(ProductDelete, "/products/<string:id>", endpoint="product_delete")
+api.add_resource(SearchWithImages, "/products/search_image", endpoint="search")
 
 #home
 api.add_resource(BannerList, "/home/banner", endpoint="banners")
 api.add_resource(CategoryImageList, "/home/category", endpoint="categoriesimages")
 api.add_resource(GetImage, "/image", endpoint="get_image")
 api.add_resource(UploadImage, "/image", endpoint="upload_image")
+
 
 #order
 api.add_resource(CreateOrder, "/order", endpoint="create_order")
@@ -68,6 +70,7 @@ def register_views():
     apispec.spec.path(view=ProductCreate, app=current_app)
     apispec.spec.path(view=ProductUpdate, app=current_app)
     apispec.spec.path(view=ProductDelete, app=current_app)
+    apispec.spec.path(view=SearchWithImages, app=current_app)
 
 
     apispec.spec.components.schema("BannerSchema", schema=BannerSchema)

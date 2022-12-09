@@ -10,14 +10,51 @@ import base64
 from ecommerce.commons.pagination import paginate
 
 class ProductList(Resource):
-    """Creation and get_all
-  
+# page 1
+# page_size 100
+# sort_by Price a_z, Price z_a
+# category Id category a, id category b
+# price 0,10000
+# condition used
+# product_name name
+
+    """Creation and get_detail
+    
     ---
     get:
       tags:
         - PRODUCTS
-      summary: Get all products
-      description: Get all products
+      summary: Get product list
+      description: Get product list
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: page_size
+          schema:
+            type: integer
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+        - in: query
+          name: category
+          schema:
+            type: string
+        - in: query
+          name: price
+          schema:
+            type: string
+        - in: query 
+          name: condition
+          schema:
+            type: string
+        - in: query 
+          name: product_name
+          schema:
+            type: string
       responses:
         200:
           content:
@@ -25,66 +62,20 @@ class ProductList(Resource):
               schema:
                 type: object
                 properties:
-                  products:
+                  product:
                     type: array
                     items: ProductSchema
     """
-  # key 
-  # page 1
-# page_size 100
-# sort_by Price a_z, Price z_a
-# category Id category a, id category b
-# price 0,10000
-# condition used
-# product_name name 
-
-    # def get(self):
-    #     sort_by = request.args.get('sort_by', 'Price a_z', type=str)
-    #     category = request.args.get('category', None, type=str)
-    #     price = request.args.get('price', None, type=str)
-    #     condition = request.args.get('condition', None, type=str)
-    #     product_name = request.args.get('product_name', None, type=str)
-
-    #     if sort_by == 'Price a_z':
-    #         sort_by = 'price'
-    #     elif sort_by == 'Price z_a':
-    #         sort_by = 'price desc'
-    #     else:
-    #         sort_by = 'price'
-          
-    #     if category:
-    #         category = category.split(',')
-    #         category = [int(i) for i in category]
-          
-    #     if price:
-    #         price = price.split(',')
-    #         price = [int(i) for i in price]
-          
-    #     if condition:
-    #         condition = condition.split(',')
-            
-    #     if product_name:
-    #         product_name = product_name.split(',')
-    #         product_name = [str(i) for i in product_name]
-          
-    #     products = db.session.execute(
-    #         """
-    #         SELECT products.id, products.title, products.price, products.size, products.condition, images.image_url
-    #         FROM products
-    #         JOIN product__images ON products.id = product__images.product_id
-    #         JOIN images ON product__images.image_id = images.id
-    #         WHERE products.title IN :product_name
-    #         GROUP BY products.id, products.title, products.price, products.size, products.condition, images.image_url
-    #         """,
-    #         {"product_name": product_name}
-    #     ).fetchall()
-      
-    #     if not products:
-          
-
-            
-
+  
     def get(self):
+        page = request.args.get('page', 1, type=int)
+        page_size = request.args.get('page_size', 100, type=int)
+        sort_by = request.args.get('sort_by', 'Price a_z', type=str)
+        category = request.args.get('category', '', type=str)
+        price = request.args.get('price', '', type=str)
+        condition = request.args.get('condition', '', type=str)
+        product_name = request.args.get('product_name', '', type=str)
+        
         products = db.session.execute(
             """
             SELECT products.id, products.title, products.product_detail as description, products.price, products.condition, products.category_id, images.image_url AS image
@@ -92,22 +83,65 @@ class ProductList(Resource):
             JOIN Categories ON products.category_id = categories.id
             JOIN product__images ON products.id = product__images.product_id
             JOIN images ON product__images.image_id = images.id
-            
             """
-        ).fetchall()            
-      
-        if not products:
-          return {'message': 'Products not found'}, 404
+        ).fetchall()
         
+        if category:
+            products = [product for product in products if product.category_id == category]
+          
+        if price:
+            price = price.split(',')
+            products = [product for product in products if product.price >= price[0] and product.price <= price[1]]
+            
+        if condition:
+            products = [product for product in products if product.condition == condition]
+            
+        if product_name:
+            products = [product for product in products if product.title == product_name]
+            
+        if sort_by == 'Price a_z':
+            products = sorted(products, key=lambda x: x.price)
+            
+        if sort_by == 'Price z_a':
+            products = sorted(products, key=lambda x: x.price, reverse=True)
+            
+        if not products:
+            return {'message': 'Products not found'}, 404
+          
         return jsonify(
             {
                 "data": ProductSchema(many=True).dump(products),
-                "total_rows": len(products)
+                "total_rows": len(products),
             }
         )
+      
+
+
+      
+      
+    #     products = db.session.execute(
+    #         """
+    #         SELECT products.id, products.title, products.product_detail as description, products.price, products.condition, products.category_id, images.image_url AS image
+    #         FROM products
+    #         JOIN Categories ON products.category_id = categories.id
+    #         JOIN product__images ON products.id = product__images.product_id
+    #         JOIN images ON product__images.image_id = images.id
+    #         """
+    #     ).fetchall()        
+      
+    #     if not products:
+    #       return {'message': 'Products not found'}, 404
+        
+    #     return jsonify(
+    #         {
+    #             "data": ProductSchema(many=True).dump(products),
+    #             "total_rows": len(products),
+    #             "pagination": paginate(products)
+    #         }
+    #     )
     
-    def error_handler(self, error):
-        return {'message': str(error)}, 400
+    # def error_handler(self, error):
+    #     return {'message': str(error)}, 400
       
 class ProductDetail(Resource):
     """Creation and get_detail
@@ -219,7 +253,7 @@ class ProductCreate(Resource):
             price=data['price'],
             condition=data['condition'],
             category_id=data['category'],
-            size='L'
+            size='S,M,L,XL'
         )
         
         db.session.add(product)
@@ -301,7 +335,7 @@ class ProductUpdate(Resource):
     """
       
     @jwt_required()
-    def put(self, id):
+    def put(self):
         current_user = get_jwt_identity()
         user = User.query.filter_by(id=current_user).first()
         if not user.is_admin:
@@ -388,3 +422,4 @@ class ProductDelete(Resource):
       
     def error_handler(self, error):
         return {'message': str(error)}, 400
+   
